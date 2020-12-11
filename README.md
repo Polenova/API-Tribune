@@ -1,3 +1,3 @@
 # APITribune
-https://polenova-tribune.herokuapp.com/
+https://polenova-api-tribune.herokuapp.com/
 
