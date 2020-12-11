@@ -11,5 +11,5 @@ interface UserRepository {
     suspend fun getByUserStatus(useStatusUser: StatusUser): AuthUserModel?
     suspend fun getByIds(ids: Collection<Long>): List<AuthUserModel>
     suspend fun save(item: AuthUserModel): AuthUserModel
-    suspend fun saveFirebaseToken(idUser: Long, firebaseToken: String): AuthUserModel?
+    //suspend fun saveFirebaseToken(idUser: Long, firebaseToken: String): AuthUserModel?
 }

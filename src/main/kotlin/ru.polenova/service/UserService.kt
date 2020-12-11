@@ -43,7 +43,7 @@ class UserService (
         } else if (repo.getByUsername(username) != null) {
             throw UserExistsException("User already exists")
         } else {
-            val model = repo.save(AuthUserModel(idUser = 0L, username = username, password = passwordEncoder.encode(password)))
+            val model = repo.save(AuthUserModel(username = username, password = password))
             val token = tokenService.generate(model)
             return AuthenticationResponseDto(token)
         }

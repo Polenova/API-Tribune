@@ -2,6 +2,7 @@ package ru.polenova.repository
 
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import ru.polenova.model.StatusUser
 import ru.polenova.model.AuthUserModel
 
@@ -23,9 +24,7 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         }
     }
 
-    override suspend fun getByUsername(username: String): AuthUserModel? {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getByUsername(username: String): AuthUserModel? = items.find { it.username == username }
 
     override suspend fun getByUserStatus(useStatusUser: StatusUser): AuthUserModel? {
         TODO("Not yet implemented")
@@ -36,10 +35,25 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
     }
 
     override suspend fun save(item: AuthUserModel): AuthUserModel {
-        TODO("Not yet implemented")
+        return when (val index = items.indexOfFirst { it.idUser== item.idUser }) {
+            -1 -> {
+                val copy = item.copy(idUser = nextId.incrementAndGet())
+                mutex.withLock {
+                    items.add(copy)
+                }
+                copy
+            }
+            else -> {
+                val copy = items[index].copy(username = item.username, password = item.password)
+                mutex.withLock {
+                    items[index] = copy
+                }
+                copy
+            }
+        }
     }
 
-    override suspend fun saveFirebaseToken(idUser: Long, firebaseToken: String): AuthUserModel? {
+    /*override suspend fun saveFirebaseToken(idUser: Long, firebaseToken: String): AuthUserModel? {
         TODO("Not yet implemented")
-    }
+    }*/
 }
