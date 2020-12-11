@@ -30,6 +30,7 @@ class ServicePost (private val repo: PostRepository) {
             dateOfCreate = input.dateOfCreate,
             user = me,
             // ??
+            idUser = 0L,
             postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
@@ -52,6 +53,7 @@ class ServicePost (private val repo: PostRepository) {
             dateOfCreate = input.dateOfCreate,
             user = me,
             // ??
+            idUser = 0L,
             postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
