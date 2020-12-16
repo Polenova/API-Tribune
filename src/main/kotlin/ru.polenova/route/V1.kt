@@ -11,9 +11,6 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import ru.polenova.dto.*
 import ru.polenova.model.AuthUserModel
-import ru.polenova.model.PostModel
-import ru.polenova.repository.PostRepository
-import ru.polenova.service.FCMService
 import ru.polenova.service.FileService
 import ru.polenova.service.ServicePost
 import ru.polenova.service.UserService
@@ -22,8 +19,7 @@ class RoutingV1(
     private val staticPath: String,
     private val postService: ServicePost,
     private val fileService: FileService,
-    private val userService: UserService,
-    private val fcmService: FCMService
+    private val userService: UserService
 ) {
     @KtorExperimentalAPI
     fun setup(configuration: Routing) {
