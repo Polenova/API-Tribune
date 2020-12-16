@@ -24,14 +24,10 @@ class ApplicationTest {
     private val configure: Application.() -> Unit = {
         (environment.config as MapApplicationConfig).apply {
             put("polenova.upload.dir", uploadPath)
-            put("polenova.fcm.password", "TEST_FCM_PASSWORD")
-            put("polenova.fcm.salt", "TEST_FCM_SALT")
-            put("polenova.fcm.db-url", "TEST_FCM_DB_URL")
-            put("polenova.fcm.path", "./fcm/fcm-encrypted.json")
-        }
+            }
         module(testing = true)
     }
-    /*@KtorExperimentalAPI
+    @KtorExperimentalAPI
     @Test
     fun testAuth() {
         withTestApplication(configure) {
@@ -79,5 +75,17 @@ class ApplicationTest {
                 assertTrue(response.content!!.contains("\"id\""))
             }
         }
-    }*/
+    }
+    private fun TestApplicationEngine.auth(): TestApplicationCall =
+        handleRequest(HttpMethod.Post, "/api/v1/authentication") {
+            addHeader(HttpHeaders.ContentType, jsonContentType.toString())
+            setBody(
+                """
+                        {
+                            "username": "vasya",
+                            "password": "password"
+                        }
+                    """.trimIndent()
+            )
+        }
 }

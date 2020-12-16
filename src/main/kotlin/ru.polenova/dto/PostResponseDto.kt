@@ -3,6 +3,7 @@ package ru.polenova.dto
 import ru.polenova.model.PostModel
 import ru.polenova.model.StatusUser
 import ru.polenova.model.*
+import ru.polenova.service.UserService
 import java.time.format.DateTimeFormatter
 
 class PostResponseDto(
@@ -16,19 +17,19 @@ class PostResponseDto(
     var postDownCount: Int,
     var pressedPostUp: Boolean,
     var pressedPostDown: Boolean,
-    var statusUser: StatusUser = StatusUser.NONE,
+    var statusUser: StatusUser = StatusUser.NORMAL,
     val idUser: Long,
     val attachmentId: String? = null
 ) {
     companion object {
-        fun fromModel(postModel: PostModel, idUser: Long): PostResponseDto {
+        fun fromModel(postModel: PostModel, idUser: Long, userService: UserService): PostResponseDto {
             val pressedPostUp = postModel.upUserIdList.contains(idUser)
             val pressedPostDown = postModel.downUserIdList.contains(idUser)
             val postUpCount = postModel.upUserIdList.size
             val postDownCount = postModel.downUserIdList.size
 
             val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
-            val dateOfPostString = postModel?.dateOfCreate?.format(formatter)
+            val dateOfPostString = postModel.dateOfCreate?.format(formatter)
 
             return PostResponseDto(
                 idPost = postModel.idPost,
@@ -41,6 +42,7 @@ class PostResponseDto(
                 postDownCount = postDownCount,
                 postName = postModel.postName,
                 idUser = 0L,
+                statusUser = StatusUser.NORMAL,
                 linkForPost = postModel.linkForPost,
                 attachmentId = postModel.attachment?.id
             )

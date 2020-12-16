@@ -9,11 +9,10 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
-import ru.polenova.dto.AuthenticationRequestDto
-import ru.polenova.dto.PasswordChangeRequestDto
-import ru.polenova.dto.PostRequestDto
-import ru.polenova.dto.UserResponseDto
+import ru.polenova.dto.*
 import ru.polenova.model.AuthUserModel
+import ru.polenova.model.PostModel
+import ru.polenova.repository.PostRepository
 import ru.polenova.service.FCMService
 import ru.polenova.service.FileService
 import ru.polenova.service.ServicePost
@@ -34,14 +33,12 @@ class RoutingV1(
             }
             route("/") {
                 post("/registration") {
-                    val input = call.receive<AuthenticationRequestDto>()
-                    val username = input.username
-                    val password = input.password
-                    val response = userService.save(username, password)
+                    val input = call.receive<UserRequestDto>()
+                    val response = userService.save(input)
                     call.respond(response)
                 }
                 post("/authentication") {
-                    val input = call.receive<AuthenticationRequestDto>()
+                    val input = call.receive<UserRequestDto>()
                     val response = userService.authenticate(input)
                     call.respond(response)
                 }
@@ -50,7 +47,7 @@ class RoutingV1(
                 route("/me") {
                     get {
                         val me = call.authentication.principal<AuthUserModel>()
-                        call.respond(UserResponseDto.fromModel(me!!))
+                        call.respond(UserResponseDto.fromModel(me!!.idUser, userService, postService))
                     }
                     post("/change-password") {
                         val me = call.authentication.principal<AuthUserModel>()
@@ -71,7 +68,7 @@ class RoutingV1(
                 route("/posts") {
                     get {
                         val me = call.authentication.principal<AuthUserModel>()
-                        val response = postService.getAllPosts(me!!.idUser)
+                        val response = postService.getAllPosts(me!!.idUser, userService)
                         call.respond(response)
                     }
                     get("/{idPosts}") {
@@ -80,12 +77,12 @@ class RoutingV1(
                             "id",
                             "Long"
                         )
-                        val response = postService.getByIdPosts(id, me!!.idPost)
+                        val response = postService.getByIdPost(id)
                         call.respond(response)
                     }
                     get("/recent") {
                         val me = call.authentication.principal<AuthUserModel>()
-                        val response = postService.getRecent(me!!.idPost)
+                        val response = postService.getRecent(me!!.idUser, userService)
                         call.respond(response)
                     }
                     get("{id}/get-posts-after") {
@@ -94,7 +91,7 @@ class RoutingV1(
                             "id",
                             "Long"
                         )
-                        val response = postService.getPostsAfter(id, me!!.idUser)
+                        val response = postService.getPostsAfter(id, me!!.idUser, userService)
                         call.respond(response)
                     }
                     get("{id}/get-posts-before") {
@@ -103,13 +100,13 @@ class RoutingV1(
                             "id",
                             "Long"
                         )
-                        val response = postService.getPostsBefore(id, me!!.idUser)
+                        val response = postService.getPostsBefore(id, me!!.idUser, userService)
                         call.respond(response)
                     }
                     post {
                         val me = call.authentication.principal<AuthUserModel>()
                         val input = call.receive<PostRequestDto>()
-                        postService.save(input, me!!)
+                        postService.save(input, me!!, userService)
                         call.respond(HttpStatusCode.OK)
                     }
                     post("/{idPost}/up") {
@@ -118,10 +115,10 @@ class RoutingV1(
                             "idPost",
                             "Long"
                         )
-                        val response = postService.upById(idPost, me!!)
+                        val response = postService.upById(idPost, me!!.idUser, userService)
                         call.respond(response)
                     }
-                    delete("/{idPost}/disup") {
+                    /*delete("/{idPost}/disup") {
                         val me = call.authentication.principal<AuthUserModel>()
                         val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
                             "idPost",
@@ -129,17 +126,17 @@ class RoutingV1(
                         )
                         val response = postService.disUpById(id, me!!)
                         call.respond(response)
-                    }
+                    }*/
                     post("/{idPost}/down") {
                         val me = call.authentication.principal<AuthUserModel>()
                         val idPost = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
                             "idPost",
                             "Long"
                         )
-                        val response = postService.downById(idPost, me!!)
+                        val response = postService.downById(idPost, me!!.idUser, userService)
                         call.respond(response)
                     }
-                    delete("/{idPost}/disdown") {
+                    /*delete("/{idPost}/disdown") {
                         val me = call.authentication.principal<AuthUserModel>()
                         val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
                             "idPost",
@@ -147,11 +144,11 @@ class RoutingV1(
                         )
                         val response = postService.disDownById(id, me!!)
                         call.respond(response)
-                    }
+                    }*/
                     post {
                         val me = call.authentication.principal<AuthUserModel>()
                         val input = call.receive<PostRequestDto>()
-                        postService.save(input, me!!)
+                        postService.save(input, me!!, userService)
                         call.respond(HttpStatusCode.OK)
                     }
                     post("/{id}") {
@@ -161,7 +158,7 @@ class RoutingV1(
                         )
                         val input = call.receive<PostRequestDto>()
                         val me = call.authentication.principal<AuthUserModel>()
-                        postService.saveById(id, input, me!!)
+                        postService.saveById(id, input, me!!, userService)
                         call.respond(HttpStatusCode.OK)
                     }
                     delete("/{id}") {

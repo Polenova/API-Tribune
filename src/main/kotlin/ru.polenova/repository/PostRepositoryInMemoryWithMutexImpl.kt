@@ -45,38 +45,38 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         }
     }
 
-    override suspend fun upById(idPost: Long, userId: Long): PostModel? {
+    override suspend fun upById(idPost: Long, idUser: Long): PostModel? {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].upUserIdList.add(userId)
+            items[index].upUserIdList.add(idUser)
         }
         return items[index]
     }
 
-    override suspend fun disUpById(idPost: Long, userId: Long): PostModel? {
+    override suspend fun disUpById(idPost: Long, idUser: Long): PostModel? {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].upUserIdList.remove(userId)
+            items[index].upUserIdList.remove(idUser)
         }
         return items[index]
     }
 
-    override suspend fun downById(idPost: Long, userId: Long): PostModel? {
+    override suspend fun downById(idPost: Long, idUser: Long): PostModel? {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].downUserIdList.add(userId)
+            items[index].downUserIdList.add(idUser)
         }
         return items[index]
     }
 
-    override suspend fun disDownById(idPost: Long, userId: Long): PostModel? {
+    override suspend fun disDownById(idPost: Long, idUser: Long): PostModel? {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].downUserIdList.remove(userId)
+            items[index].downUserIdList.remove(idUser)
         }
         return items[index]
     }

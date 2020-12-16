@@ -13,15 +13,15 @@ import ru.polenova.repository.PostRepository
 
 class ServicePost (private val repo: PostRepository) {
 
-    suspend fun getAllPosts(userId: Long): List<PostResponseDto> {
-        return repo.getAllPosts().map { PostResponseDto.fromModel(it, userId) }
+    suspend fun getAllPosts(userId: Long, userService: UserService): List<PostResponseDto> {
+        return repo.getAllPosts().map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
-    suspend fun getRecent(idPost: Long): List<PostResponseDto> {
-        return repo.getRecent().map { PostResponseDto.fromModel(it, idPost) }
+    suspend fun getRecent(userId: Long, userService: UserService): List<PostResponseDto> {
+        return repo.getRecent().map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
-    suspend fun save(input: PostRequestDto, me: AuthUserModel): PostResponseDto {
+    suspend fun save(input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
         val model = PostModel(
             idPost = 0L,
             postName = input.postName,
@@ -29,22 +29,20 @@ class ServicePost (private val repo: PostRepository) {
             linkForPost = input.linkForPost,
             dateOfCreate = input.dateOfCreate,
             user = me,
-            // ??
             idUser = 0L,
-            postUpCount = 0,
+            /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
-            pressedPostUp = false,
-            //
+            pressedPostUp = false,*/
             attachment = input.attachmentId?.let { MediaModel(id = it,
                 mediaType = MediaType.IMAGE) }
 
         )
-        return PostResponseDto.fromModel(repo.savePost(model), me.idUser)
+        return PostResponseDto.fromModel(repo.savePost(model), me.idUser, userService)
     }
 
     @KtorExperimentalAPI
-    suspend fun saveById(idPost: Long, input: PostRequestDto, me: AuthUserModel): PostResponseDto {
+    suspend fun saveById(idPost: Long, input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
         val model = PostModel(
             idPost = 0L,
             postName = input.postName,
@@ -52,13 +50,11 @@ class ServicePost (private val repo: PostRepository) {
             linkForPost = input.linkForPost,
             dateOfCreate = input.dateOfCreate,
             user = me,
-            // ??
             idUser = 0L,
-            postUpCount = 0,
+            /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
-            pressedPostUp = false,
-            //
+            pressedPostUp = false,*/
             attachment = input.attachmentId?.let { MediaModel(id = it,
                 mediaType = MediaType.IMAGE) }
         )
@@ -67,26 +63,24 @@ class ServicePost (private val repo: PostRepository) {
             throw UserAccessException("Access denied, Another user posted this post")
 
         }
-        return PostResponseDto.fromModel(repo.savePost(model), me.idUser)
+        return PostResponseDto.fromModel(repo.savePost(model), me.idUser, userService)
     }
 
     @KtorExperimentalAPI
-    suspend fun getByIdPosts(idPost: Long, userId: Long): PostResponseDto {
-        val model = repo.getByIdPost(idPost) ?: throw NotFoundException()
+    suspend fun getByIdPost(idPost: Long) = repo.getByIdPost(idPost) ?: throw NotFoundException()
 
-        return PostResponseDto.fromModel(model, userId)
-    }
+
 
     @KtorExperimentalAPI
-    suspend fun getPostsAfter(idPost: Long, userId: Long): List<PostResponseDto> {
+    suspend fun getPostsAfter(idPost: Long, userId: Long, userService: UserService): List<PostResponseDto> {
         val listPostsAfter = repo.getPostsAfter(idPost) ?: throw NotFoundException()
-        return listPostsAfter.map { PostResponseDto.fromModel(it, userId) }
+        return listPostsAfter.map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
     @KtorExperimentalAPI
-    suspend fun getPostsBefore(idPost: Long, userId: Long): List<PostResponseDto> {
+    suspend fun getPostsBefore(idPost: Long, userId: Long, userService: UserService): List<PostResponseDto> {
         val listPostsAfter = repo.getPostsBefore(idPost) ?: throw NotFoundException()
-        return listPostsAfter.map { PostResponseDto.fromModel(it, userId) }
+        return listPostsAfter.map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
     @KtorExperimentalAPI
@@ -101,32 +95,35 @@ class ServicePost (private val repo: PostRepository) {
     }
 
     @KtorExperimentalAPI
-    suspend fun upById(idPost: Long, me: AuthUserModel): PostResponseDto {
-        val model = repo.upById(idPost, me.idUser) ?: throw NotFoundException()
-        val userOfPost = model.user!!
-        /*if (!userOfPost.firebaseToken.isNullOrEmpty()) {
-            fcmService.send(userOfPost.id, userOfPost.firebaseToken, "Your post liked by ${user.username}")
-        }*/
-        return PostResponseDto.fromModel(model, idPost)
+    suspend fun upById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
+        if (getByIdPost(idPost).upUserIdList.contains(idUser)||getByIdPost(idPost).downUserIdList.contains(idUser)) {
+            throw UserAccessException("You are have reaction of this post")
+        }
+        val post = repo.upById(idPost, idUser)?: throw NotFoundException()
+        val userPost = userService.getByIdUser(post.idUser)
+        val user = userService.getByIdUser(idUser)
+        return PostResponseDto.fromModel(post, idUser, userService)
     }
-    @KtorExperimentalAPI
-    suspend fun disUpById(idPost: Long, me: AuthUserModel): PostResponseDto {
+    /*@KtorExperimentalAPI
+    suspend fun disUpById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
         val model = repo.disUpById(idPost, me.idUser) ?: throw NotFoundException()
         return PostResponseDto.fromModel(model, idPost)
     }
-
+*/
     @KtorExperimentalAPI
-    suspend fun downById(idPost: Long, me: AuthUserModel): PostResponseDto {
-        val model = repo.downById(idPost, me.idUser) ?: throw NotFoundException()
-        val userOfPost = model.user!!
-        /*if (!userOfPost.firebaseToken.isNullOrEmpty()) {
-            fcmService.send(userOfPost.id, userOfPost.firebaseToken, "Your post liked by ${user.username}")
-        }*/
-        return PostResponseDto.fromModel(model, idPost)
+    suspend fun downById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
+        if (getByIdPost(idPost).upUserIdList.contains(idUser)||getByIdPost(idPost).downUserIdList.contains(idUser)) {
+            throw UserAccessException("You are have reaction of this post")
+        }
+        val post = repo.downById(idPost, idUser)?: throw NotFoundException()
+        val userPost = userService.getByIdUser(post.idUser)
+        val user = userService.getByIdUser(idUser)
+        return PostResponseDto.fromModel(post, idUser, userService)
     }
-    @KtorExperimentalAPI
+
+    /*@KtorExperimentalAPI
     suspend fun disDownById(idPost: Long, me: AuthUserModel): PostResponseDto {
         val model = repo.disDownById(idPost, me.idUser) ?: throw NotFoundException()
         return PostResponseDto.fromModel(model, idPost)
-    }
+    }*/
 }

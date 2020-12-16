@@ -3,14 +3,13 @@ package ru.polenova.service
 import io.ktor.features.*
 import io.ktor.util.*
 import org.springframework.security.crypto.password.PasswordEncoder
-import ru.polenova.dto.AuthenticationRequestDto
-import ru.polenova.dto.AuthenticationResponseDto
-import ru.polenova.dto.PasswordChangeRequestDto
+import ru.polenova.dto.*
 import ru.polenova.exception.InvalidPasswordException
 import ru.polenova.exception.NullUsernameOrPasswordException
 import ru.polenova.exception.PasswordChangeException
 import ru.polenova.exception.UserExistsException
 import ru.polenova.model.AuthUserModel
+import ru.polenova.model.StatusUser
 import ru.polenova.repository.UserRepository
 
 class UserService (
@@ -22,12 +21,17 @@ class UserService (
         return repo.getByIdPassword(id, password)
     }
 
+    @KtorExperimentalAPI
+    suspend fun getByIdUser(idUser: Long) =
+    repo.getByIdUser(idUser) ?: throw NotFoundException()
+
+
     suspend fun getByUserName(username: String): AuthUserModel? {
         return repo.getByUsername(username)
     }
 
     @KtorExperimentalAPI
-    suspend fun changePassword(idUser: Long, input: PasswordChangeRequestDto): AuthenticationResponseDto {
+    suspend fun changePassword(idUser: Long, input: PasswordChangeRequestDto): TokenDto {
         val model = repo.getByIdUser(idUser) ?: throw NotFoundException()
         if (!passwordEncoder.matches(input.old, model.password)) {
             throw PasswordChangeException("Wrong password!")
@@ -35,27 +39,40 @@ class UserService (
         val copy = model.copy(password = passwordEncoder.encode(input.new))
         repo.save(copy)
         val token = tokenService.generate(copy)
-        return AuthenticationResponseDto(token)
+        return TokenDto(token)
     }
-    suspend fun save(username: String, password: String): AuthenticationResponseDto {
+    suspend fun save(input: UserRequestDto): TokenDto {
+        val username = input.username
+        val password = input.password
         if (username == "" || password == "") {
             throw NullUsernameOrPasswordException("Username or password is empty")
         } else if (repo.getByUsername(username) != null) {
             throw UserExistsException("User already exists")
         } else {
-            val model = repo.save(AuthUserModel(username = username, password = password))
+            val model = repo.save(AuthUserModel(username = username, password = passwordEncoder.encode(password)))
             val token = tokenService.generate(model)
-            return AuthenticationResponseDto(token)
+            return TokenDto(token)
         }
     }
     @KtorExperimentalAPI
-    suspend fun authenticate(input: AuthenticationRequestDto): AuthenticationResponseDto {
+    suspend fun authenticate(input: UserRequestDto): TokenDto {
         val model = repo.getByUsername(input.username) ?: throw NotFoundException()
         if (!passwordEncoder.matches(input.password, model.password)) {
             throw InvalidPasswordException("Wrong password!")
         }
 
         val token = tokenService.generate(model)
-        return AuthenticationResponseDto(token)
+        return TokenDto(token)
+    }
+
+    @KtorExperimentalAPI
+    suspend fun checkStatus(idUser: Long): StatusUser {
+        val user = getByIdUser(idUser)
+        return repo.getByUserStatus(user)
+    }
+
+    @KtorExperimentalAPI
+    suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean {
+        return repo.checkReadOnly(idUser, postService)
     }
 }
