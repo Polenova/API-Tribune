@@ -13,7 +13,6 @@ data class AuthUserModel (
         var readOnly: Boolean = false,
         var up: Long = 0,
         var down: Long = 0
-        //val firebaseToken: String? = null
 ): Principal
 
 enum class StatusUser {

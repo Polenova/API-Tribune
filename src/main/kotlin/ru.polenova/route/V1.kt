@@ -56,15 +56,7 @@ class RoutingV1(
                         call.respond(response)
                     }
                 }
-                /*route("/firebase-token") {
-                    post {
-                        val me = call.authentication.principal<UserModel>()
-                        val token = call.receive<TokenDto>()
-                        userService.saveFirebaseToken(me!!.id, token.token)
-                        call.respond(HttpStatusCode.OK)
-                        fcmService.send(me!!.id, token.token, "Welcome ${me!!.username}")
-                    }
-                }*/
+
                 route("/posts") {
                     get {
                         val me = call.authentication.principal<AuthUserModel>()
@@ -118,15 +110,7 @@ class RoutingV1(
                         val response = postService.upById(idPost, me!!.idUser, userService)
                         call.respond(response)
                     }
-                    /*delete("/{idPost}/disup") {
-                        val me = call.authentication.principal<AuthUserModel>()
-                        val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
-                            "idPost",
-                            "Long"
-                        )
-                        val response = postService.disUpById(id, me!!)
-                        call.respond(response)
-                    }*/
+
                     post("/{idPost}/down") {
                         val me = call.authentication.principal<AuthUserModel>()
                         val idPost = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
@@ -136,15 +120,7 @@ class RoutingV1(
                         val response = postService.downById(idPost, me!!.idUser, userService)
                         call.respond(response)
                     }
-                    /*delete("/{idPost}/disdown") {
-                        val me = call.authentication.principal<AuthUserModel>()
-                        val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
-                            "idPost",
-                            "Long"
-                        )
-                        val response = postService.disDownById(id, me!!)
-                        call.respond(response)
-                    }*/
+
                     post {
                         val me = call.authentication.principal<AuthUserModel>()
                         val input = call.receive<PostRequestDto>()

@@ -11,10 +11,6 @@ data class PostModel (
     val postName: String? = null,
     val postText: String? = null,
     val idPost: Long,
-    /*var postUpCount: Int,
-    var postDownCount: Int,
-    var pressedPostUp: Boolean,
-    var pressedPostDown: Boolean,*/
     val user: AuthUserModel? = null,
     val attachment: MediaModel? = null,
     var upUserIdList: MutableList<Long> = mutableListOf(),

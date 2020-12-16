@@ -77,7 +77,4 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         }
         return items[index].readOnly    }
 
-    /*override suspend fun saveFirebaseToken(idUser: Long, firebaseToken: String): AuthUserModel? {
-        TODO("Not yet implemented")
-    }*/
 }

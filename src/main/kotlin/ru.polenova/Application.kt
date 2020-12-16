@@ -91,25 +91,6 @@ fun Application.module(testing: Boolean = false) {
         bind<FileService>() with eagerSingleton { FileService(instance(tag = "upload-dir")) }
         bind<UserRepository>() with eagerSingleton { UserRepositoryInMemoryWithAtomicImpl() }
         bind<UserService>() with eagerSingleton { UserService(instance(), instance(), instance()) }
-        /*constant(tag = "fcm-password") with (environment.config.propertyOrNull("polenova.fcm.password")?.getString()
-            ?: throw ConfigurationException("FCM Password is not specified"))
-        constant(tag = "fcm-salt") with (environment.config.propertyOrNull("polenova.fcm.salt")?.getString()
-            ?: throw ConfigurationException("FCM Salt is not specified"))
-        constant(tag = "fcm-db-url") with (environment.config.propertyOrNull("polenova.fcm.db-url")?.getString()
-            ?: throw ConfigurationException("FCM DB Url is not specified"))
-        constant(tag = "fcm-path") with (environment.config.propertyOrNull("polenova.fcm.path")?.getString()
-            ?: throw ConfigurationException("FCM JSON Path is not specified"))
-
-        bind<FCMService>() with eagerSingleton {
-            FCMService(
-                instance(tag = "fcm-db-url"),
-                instance(tag = "fcm-password"),
-                instance(tag = "fcm-salt"),
-                instance(tag = "fcm-path")
-            )
-        }*/
-
-
         bind<RoutingV1>() with eagerSingleton {
             RoutingV1(
                 instance(tag = "upload-dir"),

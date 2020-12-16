@@ -13,5 +13,4 @@ interface UserRepository {
     suspend fun getByIds(ids: Collection<Long>): List<AuthUserModel>
     suspend fun save(item: AuthUserModel): AuthUserModel
     suspend fun checkReadOnly(userId: Long, postService: ServicePost): Boolean
-    //suspend fun saveFirebaseToken(idUser: Long, firebaseToken: String): AuthUserModel?
 }
