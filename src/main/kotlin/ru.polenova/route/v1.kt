@@ -17,7 +17,6 @@ import ru.polenova.service.UserService
 class RoutingV1(
     private val staticPath: String,
     private val postService: ServicePost,
-    private val fileService: FileService,
     private val userService: UserService
 ) {
     @KtorExperimentalAPI
