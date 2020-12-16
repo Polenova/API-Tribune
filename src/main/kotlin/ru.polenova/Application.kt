@@ -29,7 +29,6 @@ import ru.polenova.repository.UserRepositoryInMemoryWithAtomicImpl
 import ru.polenova.route.RoutingV1
 import ru.polenova.service.*
 import javax.naming.ConfigurationException
-import ru.polenova.exception.UserExistsException as UserExistsException
 
 fun main(args: Array<String>) {
     EngineMain.main(args)
@@ -94,8 +93,6 @@ fun Application.module(testing: Boolean = false) {
         bind<RoutingV1>() with eagerSingleton {
             RoutingV1(
                 instance(tag = "upload-dir"),
-                instance(),
-                instance(),
                 instance(),
                 instance()
             )

@@ -11,14 +11,13 @@ import io.ktor.routing.*
 import io.ktor.util.*
 import ru.polenova.dto.*
 import ru.polenova.model.AuthUserModel
-import ru.polenova.service.FileService
 import ru.polenova.service.ServicePost
 import ru.polenova.service.UserService
 
 class RoutingV1(
     private val staticPath: String,
     private val postService: ServicePost,
-    private val fileService: FileService,
+   // private val fileService: FileService,
     private val userService: UserService
 ) {
     @KtorExperimentalAPI
@@ -60,7 +59,7 @@ class RoutingV1(
                         call.respond(response)
                     }
                     get("/{idPosts}") {
-                        val me = call.authentication.principal<AuthUserModel>()
+                        //val me = call.authentication.principal<AuthUserModel>()
                         val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
                             "id",
                             "Long"
