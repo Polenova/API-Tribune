@@ -22,7 +22,7 @@ class RoutingV1(
     @KtorExperimentalAPI
     fun setup(configuration: Routing) {
         with(configuration) {
-            route("/api/V1/") {
+            route("/api/v1/") {
                 static("/static") { files(staticPath) }
             }
             route("/") {
