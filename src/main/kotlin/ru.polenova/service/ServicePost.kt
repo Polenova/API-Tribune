@@ -17,10 +17,12 @@ class ServicePost (private val repo: PostRepository) {
         return repo.getAllPosts().map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
+    @KtorExperimentalAPI
     suspend fun getRecent(userId: Long, userService: UserService): List<PostResponseDto> {
         return repo.getRecent().map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
+    @KtorExperimentalAPI
     suspend fun save(input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
         val model = PostModel(
             idPost = 0L,

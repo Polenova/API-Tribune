@@ -14,7 +14,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
     private val items = mutableListOf<PostModel>()
     private val mutex = Mutex()
 
-    override suspend fun getAllPosts(): List<PostModel> = items.reversed()
+    override suspend fun getAllPosts()  = items.sortedWith(compareBy { it.dateOfCreate }).reversed()
 
     override suspend fun getByIdPost(idPost: Long): PostModel? =
         items.find { it.idPost == idPost }
