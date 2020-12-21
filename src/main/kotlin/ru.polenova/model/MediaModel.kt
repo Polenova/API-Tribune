@@ -1,7 +1,4 @@
 package ru.polenova.model
 
-enum class MediaType {
-    IMAGE
-}
 
-data class MediaModel(val id: String, val mediaType: MediaType)
+data class MediaModel(val id: String)

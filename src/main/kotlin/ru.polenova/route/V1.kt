@@ -52,13 +52,7 @@ class RoutingV1(
                     }
 
                     route("/posts") {
-                        get {
-                            val me = call.authentication.principal<AuthUserModel>()
-                            val response = postService.getAllPosts(me!!.idUser, userService)
-                            call.respond(response)
-                        }
                         get("/{idPosts}") {
-                            //val me = call.authentication.principal<AuthUserModel>()
                             val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
                                 "id",
                                 "Long"
@@ -115,12 +109,6 @@ class RoutingV1(
                             call.respond(response)
                         }
 
-                        post {
-                            val me = call.authentication.principal<AuthUserModel>()
-                            val input = call.receive<PostRequestDto>()
-                            postService.save(input, me!!, userService)
-                            call.respond(HttpStatusCode.OK)
-                        }
                         post("/{id}") {
                             val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
                                 "id",

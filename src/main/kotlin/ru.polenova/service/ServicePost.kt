@@ -7,7 +7,6 @@ import ru.polenova.dto.PostResponseDto
 import ru.polenova.exception.UserAccessException
 import ru.polenova.model.AuthUserModel
 import ru.polenova.model.MediaModel
-import ru.polenova.model.MediaType
 import ru.polenova.model.PostModel
 import ru.polenova.repository.PostRepository
 
@@ -36,8 +35,7 @@ class ServicePost (private val repo: PostRepository) {
             postDownCount = 0,
             pressedPostDown = false,
             pressedPostUp = false,*/
-            attachment = input.attachmentId?.let { MediaModel(id = it,
-                mediaType = MediaType.IMAGE) }
+            attachment = input.attachmentId?.let { MediaModel(id = it) }
 
         )
         return PostResponseDto.fromModel(repo.savePost(model), me.idUser, userService)
@@ -57,8 +55,7 @@ class ServicePost (private val repo: PostRepository) {
             postDownCount = 0,
             pressedPostDown = false,
             pressedPostUp = false,*/
-            attachment = input.attachmentId?.let { MediaModel(id = it,
-                mediaType = MediaType.IMAGE) }
+            attachment = input.attachmentId?.let { MediaModel(id = it) }
         )
         val existingPostModel = repo.getByIdPost(idPost) ?: throw NotFoundException()
         if (existingPostModel.user?.idUser != me.idUser) {

@@ -7,7 +7,7 @@ import io.ktor.util.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.polenova.dto.MediaResponseDto
-import ru.polenova.model.MediaType
+import ru.polenova.model.MediaModel
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
@@ -23,7 +23,6 @@ class FileService(private val uploadPath: String) {
         }
     }
 
-    @KtorExperimentalAPI
     suspend fun save(multipart: MultiPartData): MediaResponseDto {
         var response: MediaResponseDto? = null
         multipart.forEachPart { part ->
@@ -47,7 +46,7 @@ class FileService(private val uploadPath: String) {
                             }
                         }
                         part.dispose()
-                        response = MediaResponseDto(name, MediaType.IMAGE)
+                        response = MediaResponseDto.fromModel(MediaModel(name))
                         return@forEachPart
                     }
                 }
