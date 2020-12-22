@@ -27,15 +27,15 @@ class ServicePost (private val repo: PostRepository) {
             idPost = 0L,
             postName = input.postName,
             postText = input.postText,
-            linkForPost = input.linkForPost,
-            dateOfCreate = input.dateOfCreate,
+            //linkForPost = input.linkForPost,
+            //dateOfCreate = input.dateOfCreate,
             user = me,
-            idUser = 0L,
+            idUser = 0L
             /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
             pressedPostUp = false,*/
-            attachment = input.attachmentId?.let { MediaModel(id = it) }
+            //attachment = input.attachmentId?.let { MediaModel(id = it) }
 
         )
         return PostResponseDto.fromModel(repo.savePost(model), me.idUser, userService)
@@ -47,15 +47,15 @@ class ServicePost (private val repo: PostRepository) {
             idPost = 0L,
             postName = input.postName,
             postText = input.postText,
-            linkForPost = input.linkForPost,
-            dateOfCreate = input.dateOfCreate,
+            //linkForPost = input.linkForPost,
+            //dateOfCreate = input.dateOfCreate,
             user = me,
-            idUser = 0L,
+            idUser = 0L
             /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
             pressedPostUp = false,*/
-            attachment = input.attachmentId?.let { MediaModel(id = it) }
+            //attachment = input.attachmentId?.let { MediaModel(id = it) }
         )
         val existingPostModel = repo.getByIdPost(idPost) ?: throw NotFoundException()
         if (existingPostModel.user?.idUser != me.idUser) {

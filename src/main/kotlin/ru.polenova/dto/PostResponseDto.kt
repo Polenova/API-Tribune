@@ -6,7 +6,7 @@ import ru.polenova.model.*
 import ru.polenova.service.UserService
 import java.time.format.DateTimeFormatter
 
-class PostResponseDto(
+data class PostResponseDto(
     val idPost: Long,
     val userName: String?,
     val postName: String? = null,
