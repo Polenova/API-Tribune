@@ -78,8 +78,8 @@ class ServicePost (private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun getPostsBefore(idPost: Long, userId: Long, userService: UserService): List<PostResponseDto> {
-        val listPostsAfter = repo.getPostsBefore(idPost) ?: throw NotFoundException()
-        return listPostsAfter.map { PostResponseDto.fromModel(it, userId, userService) }
+        val listPostsBefore = repo.getPostsBefore(idPost) ?: throw NotFoundException()
+        return listPostsBefore.map { PostResponseDto.fromModel(it, userId, userService) }
     }
 
     @KtorExperimentalAPI
