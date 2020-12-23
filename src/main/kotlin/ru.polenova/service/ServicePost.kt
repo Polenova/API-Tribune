@@ -101,7 +101,9 @@ class ServicePost (private val repo: PostRepository) {
         val post = repo.upById(idPost, idUser)?: throw NotFoundException()
         val userPost = userService.getByIdUser(post.idUser)
         val user = userService.getByIdUser(idUser)
-        return PostResponseDto.fromModel(post, idUser, userService)
+        val postResponseDto = PostResponseDto.fromModel(post, idUser, userService)
+        userService.addUp(idUser)
+        return postResponseDto
     }
     /*@KtorExperimentalAPI
     suspend fun disUpById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
@@ -118,6 +120,7 @@ class ServicePost (private val repo: PostRepository) {
         val userPost = userService.getByIdUser(post.idUser)
         val user = userService.getByIdUser(idUser)
         return PostResponseDto.fromModel(post, idUser, userService)
+
     }
 
     /*@KtorExperimentalAPI

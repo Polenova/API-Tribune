@@ -37,6 +37,20 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         TODO("Not yet implemented")
     }
 
+    override suspend fun addUp(idUser: Long): AuthUserModel? {
+        return when (val index = items.indexOfFirst { it.idUser == idUser }) {
+            -1 -> {
+                null
+            }
+            else -> {
+                mutex.withLock {
+                    items[index].up++
+                }
+                items[index]
+            }
+        }
+    }
+
     override suspend fun save(item: AuthUserModel): AuthUserModel {
         return when (val index = items.indexOfFirst { it.idUser== item.idUser }) {
             -1 -> {

@@ -75,4 +75,8 @@ class UserService (
     suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean {
         return repo.checkReadOnly(idUser, postService)
     }
+
+    @KtorExperimentalAPI
+    suspend fun addUp(idUser: Long) = repo.addUp(idUser) ?: throw NotFoundException()
+
 }
