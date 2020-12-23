@@ -91,7 +91,7 @@ class RoutingV1(
                         }
                         post("/{idPost}/up") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
+                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
                                 "idPost",
                                 "Long"
                             )
@@ -101,7 +101,7 @@ class RoutingV1(
 
                         post("/{idPost}/down") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
+                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
                                 "idPost",
                                 "Long"
                             )
