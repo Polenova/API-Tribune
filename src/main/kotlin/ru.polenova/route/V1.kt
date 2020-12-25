@@ -86,7 +86,7 @@ class RoutingV1(
                         post {
                             val me = call.authentication.principal<AuthUserModel>()
                             val input = call.receive<PostRequestDto>()
-                            postService.save(me!!.idUser, input, me, userService)
+                            postService.save( input, me!!, userService)
                             call.respond(HttpStatusCode.OK)
                         }
                         post("/{idPost}/up") {
