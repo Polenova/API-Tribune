@@ -23,7 +23,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
                 val todayDate = LocalDateTime.now()
                 val dateId = ZoneId.of("Europe/Moscow")
                 val zonedDateTime = ZonedDateTime.of(todayDate, dateId)
-                val copy = item.copy(idPost = nextId.incrementAndGet())
+                val copy = item.copy(idPost = nextId.incrementAndGet(), dateOfCreate = todayDate)
                 mutex.withLock {
                     items.add(copy)
                 }

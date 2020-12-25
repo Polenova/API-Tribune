@@ -23,7 +23,7 @@ class ServicePost (private val repo: PostRepository) {
     }
 
     @KtorExperimentalAPI
-    suspend fun save( input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
+    suspend fun save(input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
         val date = LocalDateTime.now()
         val model = PostModel(
             idPost = 0L,
