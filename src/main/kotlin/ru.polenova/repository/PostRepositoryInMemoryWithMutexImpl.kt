@@ -19,9 +19,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
     override suspend fun getByIdPost(idPost: Long): PostModel? =
         items.find { it.idPost == idPost }
 
-    override suspend fun savePost(item: PostModel): PostModel =
-        when (val index = items.indexOfFirst {it.idPost == item.idPost}){
-            -1 -> {
+    override suspend fun savePost(item: PostModel): PostModel {
                 val todayDate = LocalDateTime.now()
                 val dateId = ZoneId.of("Europe/Moscow")
                 val zonedDateTime = ZonedDateTime.of(todayDate, dateId)
@@ -29,14 +27,8 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
                 mutex.withLock {
                     items.add(copy)
                 }
-                copy
-            }
-            else -> {
-                mutex.withLock {
-                    items[index] = item
-                }
-                item
-            }
+                return copy
+
     }
 
     override suspend fun removePostByIdPost(idPost: Long) {
@@ -49,7 +41,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].upUserIdList.add(idUser)
+            items[index].upUserIdMap.put(idUser, LocalDateTime.now())
         }
         return items[index]
     }
@@ -58,7 +50,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].upUserIdList.remove(idUser)
+            items[index].upUserIdMap.remove(idUser)
         }
         return items[index]
     }
@@ -67,7 +59,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].downUserIdList.add(idUser)
+            items[index].downUserIdMap.put(idUser, LocalDateTime.now())
         }
         return items[index]
     }
@@ -76,7 +68,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
-            items[index].downUserIdList.remove(idUser)
+            items[index].downUserIdMap.remove(idUser)
         }
         return items[index]
     }

@@ -1,5 +1,6 @@
 package ru.polenova.dto
 
+import io.ktor.util.*
 import ru.polenova.model.PostModel
 import ru.polenova.model.StatusUser
 import ru.polenova.model.*
@@ -17,16 +18,18 @@ data class PostResponseDto(
     var postDownCount: Int,
     var pressedPostUp: Boolean,
     var pressedPostDown: Boolean,
-    var statusUser: StatusUser = StatusUser.NORMAL,
+    var statusUser: StatusUser = StatusUser.NONE,
     val idUser: Long,
     val attachmentId: String? = null
 ) {
     companion object {
-        fun fromModel(postModel: PostModel, idUser: Long, userService: UserService): PostResponseDto {
+        @KtorExperimentalAPI
+        suspend fun fromModel(postModel: PostModel, idUser: Long, userService: UserService): PostResponseDto {
             val pressedPostUp = postModel.upUserIdList.contains(idUser)
             val pressedPostDown = postModel.downUserIdList.contains(idUser)
             val postUpCount = postModel.upUserIdList.size
             val postDownCount = postModel.downUserIdList.size
+            val user = userService.getByIdUser(idUser)
 
             val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
             val dateOfPostString = postModel.dateOfCreate?.format(formatter)
@@ -42,7 +45,7 @@ data class PostResponseDto(
                 postDownCount = postDownCount,
                 postName = postModel.postName,
                 idUser = 0L,
-                statusUser = StatusUser.NORMAL,
+                statusUser = StatusUser.NONE,
                 linkForPost = postModel.linkForPost,
                 attachmentId = postModel.attachment?.id
             )

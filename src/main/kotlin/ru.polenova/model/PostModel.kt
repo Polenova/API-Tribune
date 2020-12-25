@@ -1,5 +1,6 @@
 package ru.polenova.model
 
+import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import kotlin.Long as Long
 
@@ -13,6 +14,6 @@ data class PostModel (
     val idPost: Long,
     val user: AuthUserModel? = null,
     val attachment: MediaModel? = null,
-    var upUserIdList: MutableList<Long> = mutableListOf(),
-    var downUserIdList: MutableList<Long> = mutableListOf()
+    var upUserIdMap: MutableMap<Long, LocalDateTime> = mutableMapOf(),
+    var downUserIdMap: MutableMap<Long, LocalDateTime> = mutableMapOf()
 )

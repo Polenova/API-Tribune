@@ -42,30 +42,6 @@ class ServicePost (private val repo: PostRepository) {
     }
 
     @KtorExperimentalAPI
-    suspend fun saveById(idPost: Long, input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
-        val model = PostModel(
-            idPost = 0L,
-            postName = input.postName,
-            postText = input.postText,
-            //linkForPost = input.linkForPost,
-            //dateOfCreate = input.dateOfCreate,
-            user = me,
-            idUser = 0L
-            /*postUpCount = 0,
-            postDownCount = 0,
-            pressedPostDown = false,
-            pressedPostUp = false,*/
-            //attachment = input.attachmentId?.let { MediaModel(id = it) }
-        )
-        val existingPostModel = repo.getByIdPost(idPost) ?: throw NotFoundException()
-        if (existingPostModel.user?.idUser != me.idUser) {
-            throw UserAccessException("Access denied, Another user posted this post")
-
-        }
-        return PostResponseDto.fromModel(repo.savePost(model), me.idUser, userService)
-    }
-
-    @KtorExperimentalAPI
     suspend fun getByIdPost(idPost: Long) = repo.getByIdPost(idPost) ?: throw NotFoundException()
 
 
@@ -95,15 +71,15 @@ class ServicePost (private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun upById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
-        /*if (getByIdPost(idPost).upUserIdList.contains(idUser)||getByIdPost(idPost).downUserIdList.contains(idUser)) {
+        if (getByIdPost(idPost).upUserIdMap.contains(idUser)||getByIdPost(idPost).downUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
-        }*/
+        }
         val post = repo.upById(idPost, idUser)?: throw NotFoundException()
         val userPost = userService.getByIdUser(post.idUser)
         val user = userService.getByIdUser(idUser)
         val postResponseDto = PostResponseDto.fromModel(post, idUser, userService)
         userService.addUp(idUser)
-        return postResponseDto
+        return PostResponseDto.fromModel(post, idUser, userService)
     }
     /*@KtorExperimentalAPI
     suspend fun disUpById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
@@ -113,7 +89,7 @@ class ServicePost (private val repo: PostRepository) {
 */
     @KtorExperimentalAPI
     suspend fun downById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
-        if (getByIdPost(idPost).upUserIdList.contains(idUser)||getByIdPost(idPost).downUserIdList.contains(idUser)) {
+        if (getByIdPost(idPost).upUserIdMap.contains(idUser)||getByIdPost(idPost).downUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
         }
         val post = repo.downById(idPost, idUser)?: throw NotFoundException()

@@ -1,6 +1,7 @@
 package ru.polenova.repository
 
 import io.ktor.network.selector.SelectInterest.Companion.size
+import io.ktor.util.*
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -51,6 +52,20 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         }
     }
 
+    override suspend fun addDown(idUser: Long): AuthUserModel? {
+        return when (val index = items.indexOfFirst { it.idUser == idUser}) {
+            -1 -> {
+                null
+            }
+            else -> {
+                mutex.withLock {
+                    items[index].down++
+                }
+                items[index]
+            }
+        }
+    }
+
     override suspend fun save(item: AuthUserModel): AuthUserModel {
         return when (val index = items.indexOfFirst { it.idUser== item.idUser }) {
             -1 -> {
@@ -69,12 +84,12 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
             }
         }
     }
-
+    @KtorExperimentalAPI
     override suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean {
         val index = items.indexOfFirst { it.idUser == idUser }
         items[index].userPostsId.forEach {
             val post = postService.getByIdPost(it)
-            if (post.downUserIdList.size >= 5 && post.upUserIdList.isEmpty()) {         // > 100
+            if (post.downUserIdMap.size >= 5 && post.upUserIdMap.isEmpty()) {         // > 100
                 if (!items[index].readOnly) {
                     mutex.withLock {
                         items[index].readOnly = true
@@ -89,6 +104,7 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
                 }
             }
         }
-        return items[index].readOnly    }
+        return items[index].readOnly
+    }
 
 }

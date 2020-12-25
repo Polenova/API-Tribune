@@ -12,6 +12,7 @@ interface UserRepository {
     suspend fun getByUserStatus(user: AuthUserModel): StatusUser
     suspend fun getByIds(ids: Collection<Long>): List<AuthUserModel>
     suspend fun addUp(idUser: Long): AuthUserModel?
+    suspend fun addDown(idUser: Long): AuthUserModel?
     suspend fun save(item: AuthUserModel): AuthUserModel
     suspend fun checkReadOnly(userId: Long, postService: ServicePost): Boolean
 }

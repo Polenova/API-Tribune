@@ -9,14 +9,14 @@ data class AuthUserModel (
         var userPostsId: MutableList<Long> = mutableListOf(),
         var attachmentImage: String? = null,
         var token: String? = null,
-        var status: StatusUser = StatusUser.NORMAL,
+        var status: StatusUser = StatusUser.NONE,
         var readOnly: Boolean = false,
         var up: Long = 0,
         var down: Long = 0
 ): Principal
 
 enum class StatusUser {
-        NORMAL,
+        NONE,
         PROMOTER,
         HATER
 }
