@@ -9,6 +9,7 @@ import ru.polenova.model.AuthUserModel
 import ru.polenova.model.MediaModel
 import ru.polenova.model.PostModel
 import ru.polenova.repository.PostRepository
+import java.time.LocalDateTime
 
 class ServicePost (private val repo: PostRepository) {
 
@@ -22,15 +23,15 @@ class ServicePost (private val repo: PostRepository) {
     }
 
     @KtorExperimentalAPI
-    suspend fun save(input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
+    suspend fun save(idUser: Long, input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
+        val date = LocalDateTime.now()
         val model = PostModel(
             idPost = 0L,
             postName = input.postName,
             postText = input.postText,
-            //linkForPost = input.linkForPost,
-            //dateOfCreate = input.dateOfCreate,
-            user = me,
-            idUser = 0L
+            link = input.link,
+            dateOfCreate = date,
+            idUser = idUser
             /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,

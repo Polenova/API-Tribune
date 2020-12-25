@@ -12,7 +12,7 @@ data class PostResponseDto(
     val userName: String?,
     val postName: String? = null,
     val postText: String? = null,
-    val linkForPost: String? = null,
+    val link: String? = null,
     val dateOfCreate: String? = null,
     var postUpCount: Int,
     var postDownCount: Int,
@@ -45,7 +45,7 @@ data class PostResponseDto(
                 postDownCount = postDownCount,
                 idUser = user.idUser,
                 statusUser = StatusUser.PROMOTER,
-                linkForPost = postModel.linkForPost,
+                link = postModel.link,
                 attachmentId = postModel.attachment?.id
             )
         }
