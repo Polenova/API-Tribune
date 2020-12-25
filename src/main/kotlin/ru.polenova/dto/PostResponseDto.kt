@@ -27,7 +27,7 @@ data class PostResponseDto(
         suspend fun fromModel(postModel: PostModel, idUser: Long, userService: UserService): PostResponseDto {
             val user = userService.getByIdUser(idUser)
             val pressedPostUp = postModel.upUserIdMap.contains(user.idUser)
-            val pressedPostDown = postModel.downUserIdMap.contains(idUser)
+            val pressedPostDown = postModel.downUserIdMap.contains(user.idUser)
             val postUpCount = postModel.upUserIdMap.size
             val postDownCount = postModel.downUserIdMap.size
             val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss Z");
@@ -35,16 +35,16 @@ data class PostResponseDto(
 
             return PostResponseDto(
                 idPost = postModel.idPost,
-                postText = postModel.postText,
                 dateOfCreate = dateOfPostString,
-                userName = userService.getByUserName(user.username).toString(),
+                userName = user.username,
+                postName = postModel.postName,
+                postText = postModel.postText,
                 postUpCount = postUpCount,
                 pressedPostUp = pressedPostUp,
                 pressedPostDown = pressedPostDown,
                 postDownCount = postDownCount,
-                postName = postModel.postName,
                 idUser = user.idUser,
-                statusUser = StatusUser.HATER,
+                statusUser = StatusUser.PROMOTER,
                 linkForPost = postModel.linkForPost,
                 attachmentId = postModel.attachment?.id
             )
