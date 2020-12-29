@@ -27,10 +27,10 @@ class ServicePost (private val repo: PostRepository) {
         val date = LocalDateTime.now()
         val model = PostModel(
             idPost = 0L,
+            dateOfCreate = date,
             postName = input.postName,
             postText = input.postText,
             link = input.link,
-            dateOfCreate = date,
             idUser = me.idUser
             /*postUpCount = 0,
             postDownCount = 0,
