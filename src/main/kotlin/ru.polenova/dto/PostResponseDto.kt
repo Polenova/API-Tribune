@@ -30,14 +30,13 @@ data class PostResponseDto(
             val pressedPostDown = postModel.downUserIdMap.contains(user.idUser)
             val postUpCount = postModel.upUserIdMap.size
             val postDownCount = postModel.downUserIdMap.size
-            val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
             val dateOfPostString = postModel.dateOfCreate.format(formatter)
 
             return PostResponseDto(
                 idPost = postModel.idPost,
                 userName = user.username,
                 dateOfCreate = dateOfPostString,
-
                 postName = postModel.postName,
                 postText = postModel.postText,
                 postUpCount = postUpCount,

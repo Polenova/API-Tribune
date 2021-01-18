@@ -74,10 +74,10 @@ class RoutingV1(
                             val response = postService.getPostsAfter(id, me!!.idUser, userService)
                             call.respond(response)
                         }
-                        get("/{idPost}/get-posts-before") {
+                        get("/{idUser}/get-posts-before") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "idPost",
+                            val idPost = call.parameters["idUser"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idUser",
                                 "Long"
                             )
                             val response = postService.getPostsBefore(idPost, me!!.idUser, userService)
