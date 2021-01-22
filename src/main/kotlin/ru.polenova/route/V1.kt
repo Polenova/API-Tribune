@@ -89,20 +89,20 @@ class RoutingV1(
                             postService.save( input, me!!, userService)
                             call.respond(HttpStatusCode.OK)
                         }
-                        post("/{idPost}/up") {
+                        post("/{idUser}/up") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "idPost",
+                            val idPost = call.parameters["idUser"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idUser",
                                 "Long"
                             )
                             val response = postService.upById(idPost, me!!.idUser, userService)
                             call.respond(response)
                         }
 
-                        post("/{idPost}/down") {
+                        post("/{idUser}/down") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "idPost",
+                            val idPost = call.parameters["idUser"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idUser",
                                 "Long"
                             )
                             val response = postService.downById(idPost, me!!.idUser, userService)
