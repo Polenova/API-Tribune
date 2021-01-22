@@ -65,19 +65,10 @@ class RoutingV1(
                             val response = postService.getRecent(me!!.idUser, userService)
                             call.respond(response)
                         }
-                        get("{id}/get-posts-after") {
+                        get("/{idPost}/get-posts-before") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "id",
-                                "Long"
-                            )
-                            val response = postService.getPostsAfter(id, me!!.idUser, userService)
-                            call.respond(response)
-                        }
-                        get("/{idUser}/get-posts-before") {
-                            val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["idUser"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "idUser",
+                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idPost",
                                 "Long"
                             )
                             val response = postService.getPostsBefore(idPost, me!!.idUser, userService)
@@ -99,20 +90,20 @@ class RoutingV1(
                             call.respond(response)
                         }
 
-                        post("/{idUser}/down") {
+                        post("/{idPost}/down") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val idPost = call.parameters["idUser"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "idUser",
+                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idPost",
                                 "Long"
                             )
                             val response = postService.downById(idPost, me!!.idUser, userService)
                             call.respond(response)
                         }
 
-                        delete("/{id}") {
+                        delete("/{idPost}") {
                             val me = call.authentication.principal<AuthUserModel>()
-                            val id = call.parameters["id"]?.toLongOrNull() ?: throw ParameterConversionException(
-                                "id",
+                            val id = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idPost",
                                 "Long"
                             )
                             if (!postService.removePostByIdPost(id, me!!)) {
