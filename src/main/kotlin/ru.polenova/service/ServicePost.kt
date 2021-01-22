@@ -88,7 +88,7 @@ class ServicePost (private val repo: PostRepository) {
 */
     @KtorExperimentalAPI
     suspend fun downById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
-        if (getByIdPost(idPost).upUserIdMap.contains(idUser)||getByIdPost(idPost).downUserIdMap.contains(idUser)) {
+        if (getByIdPost(idPost).downUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
         }
         val post = repo.downById(idPost, idUser)?: throw NotFoundException()
