@@ -2,6 +2,7 @@ package ru.polenova.service
 
 import io.ktor.features.*
 import io.ktor.util.*
+import org.apache.poi.hsmf.datatypes.Types.getById
 import org.springframework.security.crypto.password.PasswordEncoder
 import ru.polenova.dto.*
 import ru.polenova.exception.InvalidPasswordException
@@ -28,6 +29,12 @@ class UserService (
 
     suspend fun getByUserName(username: String): AuthUserModel? {
         return repo.getByUsername(username)
+    }
+
+    @KtorExperimentalAPI
+    suspend fun addPostId(idUser: Long, postId: Long) {
+        val user = getByIdUser(idUser)
+        repo.addPostId(user, postId)
     }
 
     @KtorExperimentalAPI

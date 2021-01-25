@@ -106,4 +106,11 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         }
         return items[index].readOnly
     }
+
+    override suspend fun addPostId(user: AuthUserModel, idPost: Long) {
+        val index = items.indexOfFirst { it.idUser == user.idUser }
+        mutex.withLock {
+            items[index].userPostsId.add(idPost)
+        }
+    }
 }

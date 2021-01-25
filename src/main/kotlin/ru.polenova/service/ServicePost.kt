@@ -23,7 +23,7 @@ class ServicePost (private val repo: PostRepository) {
     }
 
     @KtorExperimentalAPI
-    suspend fun save(input: PostRequestDto, me: AuthUserModel, userService: UserService): PostResponseDto {
+    suspend fun save(input: PostRequestDto, idUser: Long, userService: UserService) {
         val date = LocalDateTime.now()
         val model = PostModel(
             idPost = 0L,
@@ -31,7 +31,7 @@ class ServicePost (private val repo: PostRepository) {
             postName = input.postName,
             postText = input.postText,
             link = input.link,
-            idUser = me.idUser
+            idUser = idUser
             /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
@@ -39,7 +39,7 @@ class ServicePost (private val repo: PostRepository) {
             //attachment = input.attachmentId?.let { MediaModel(id = it) }
 
         )
-        return PostResponseDto.fromModel(repo.savePost(model), me.idUser, userService)
+        val post = userService.addPostId(idUser, repo.savePost(model).idPost)
     }
 
     @KtorExperimentalAPI

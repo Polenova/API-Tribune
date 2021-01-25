@@ -14,5 +14,6 @@ interface UserRepository {
     suspend fun addUp(idUser: Long): AuthUserModel?
     suspend fun addDown(idUser: Long): AuthUserModel?
     suspend fun save(item: AuthUserModel): AuthUserModel
-    suspend fun checkReadOnly(userId: Long, postService: ServicePost): Boolean
+    suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean
+    suspend fun addPostId(user: AuthUserModel, idPost: Long)
 }
