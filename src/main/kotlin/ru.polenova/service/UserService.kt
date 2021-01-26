@@ -86,4 +86,7 @@ class UserService (
     @KtorExperimentalAPI
     suspend fun addUp(idUser: Long) = repo.addUp(idUser) ?: throw NotFoundException()
 
+    @KtorExperimentalAPI
+    suspend fun addDown(idUser: Long) = repo.addDown(idUser) ?: throw NotFoundException()
+
 }
