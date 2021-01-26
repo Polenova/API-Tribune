@@ -46,13 +46,6 @@ class ServicePost (private val repo: PostRepository) {
     suspend fun getByIdPost(idPost: Long) = repo.getByIdPost(idPost) ?: throw NotFoundException()
 
 
-
-    @KtorExperimentalAPI
-    suspend fun getPostsAfter(idPost: Long, userId: Long, userService: UserService): List<PostResponseDto> {
-        val listPostsAfter = repo.getPostsAfter(idPost) ?: throw NotFoundException()
-        return listPostsAfter.map { PostResponseDto.fromModel(it, userId, userService) }
-    }
-
     @KtorExperimentalAPI
     suspend fun getPostsBefore(idPost: Long, userId: Long, userService: UserService): List<PostResponseDto> {
         val listPostsBefore = repo.getPostsBefore(idPost) ?: throw NotFoundException()
@@ -72,16 +65,16 @@ class ServicePost (private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun upById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
-        if (getByIdPost(idPost).upUserIdMap.contains(idUser)) {
+        /*if (getByIdPost(idPost).upUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
-        } else {
+        } else {*/
             val post = repo.upById(idPost, idUser)?: throw NotFoundException()
             val userPost = userService.getByIdUser(post.idUser)
             val user = userService.getByIdUser(idUser)
             val postResponseDto = PostResponseDto.fromModel(post, idPost, userService)
             userService.addUp(idUser)
             return postResponseDto
-        }
+        //}
 
     }
     /*@KtorExperimentalAPI
