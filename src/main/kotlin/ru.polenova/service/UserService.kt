@@ -48,9 +48,7 @@ class UserService (
         val token = tokenService.generate(copy)
         return TokenDto(token)
     }
-    suspend fun save(input: UserRequestDto): TokenDto {
-        val username = input.username
-        val password = input.password
+    suspend fun save(username: String, password: String): AuthenticationResponseDto {
         if (username == "" || password == "") {
             throw NullUsernameOrPasswordException("Username or password is empty")
         } else if (repo.getByUsername(username) != null) {
@@ -58,18 +56,18 @@ class UserService (
         } else {
             val model = repo.save(AuthUserModel(username = username, password = passwordEncoder.encode(password)))
             val token = tokenService.generate(model)
-            return TokenDto(token)
+            return AuthenticationResponseDto(token)
         }
     }
     @KtorExperimentalAPI
-    suspend fun authenticate(input: UserRequestDto): TokenDto {
+    suspend fun authenticate(input: AuthenticationRequestDto): AuthenticationResponseDto {
         val model = repo.getByUsername(input.username) ?: throw NotFoundException()
         if (!passwordEncoder.matches(input.password, model.password)) {
             throw InvalidPasswordException("Wrong password!")
         }
 
         val token = tokenService.generate(model)
-        return TokenDto(token)
+        return AuthenticationResponseDto(token)
     }
 
     @KtorExperimentalAPI
