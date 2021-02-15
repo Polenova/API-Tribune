@@ -18,8 +18,8 @@ class UserService (
     private val tokenService: JWTTokenService,
     private val passwordEncoder: PasswordEncoder
 ) {
-    suspend fun getModelByIdPassword(id: Long, password: String): AuthUserModel? {
-        return repo.getByIdPassword(id, password)
+    suspend fun getModelByIdPassword(idUser: Long, password: String): AuthUserModel? {
+        return repo.getByIdPassword(idUser, password)
     }
 
     @KtorExperimentalAPI

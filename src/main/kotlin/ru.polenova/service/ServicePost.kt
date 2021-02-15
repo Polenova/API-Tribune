@@ -13,13 +13,13 @@ import java.time.LocalDateTime
 
 class ServicePost (private val repo: PostRepository) {
 
-    suspend fun getAllPosts(userId: Long, userService: UserService): List<PostResponseDto> {
-        return repo.getAllPosts().map { PostResponseDto.fromModel(it, userId, userService) }
+    suspend fun getAllPosts(idUser: Long, userService: UserService): List<PostResponseDto> {
+        return repo.getAllPosts().map { PostResponseDto.fromModel(it, userService) }
     }
 
     @KtorExperimentalAPI
-    suspend fun getRecent(userId: Long, userService: UserService): List<PostResponseDto> {
-        return repo.getRecent().map { PostResponseDto.fromModel(it, userId, userService) }
+    suspend fun getRecent(idUser: Long, userService: UserService): List<PostResponseDto> {
+        return repo.getRecent().map { PostResponseDto.fromModel(it, userService) }
     }
 
     @KtorExperimentalAPI
@@ -49,7 +49,7 @@ class ServicePost (private val repo: PostRepository) {
     @KtorExperimentalAPI
     suspend fun getPostsBefore(idPost: Long, idUser: Long, userService: UserService): List<PostResponseDto> {
         val listPostsBefore = repo.getPostsBefore(idPost) ?: throw NotFoundException()
-        return listPostsBefore.map { PostResponseDto.fromModel(it, idUser, userService) }
+        return listPostsBefore.map { PostResponseDto.fromModel(it, userService) }
     }
 
     @KtorExperimentalAPI
@@ -71,7 +71,7 @@ class ServicePost (private val repo: PostRepository) {
             val post = repo.upById(idPost, idUser)?: throw NotFoundException()
             val userPost = userService.getByIdUser(post.idUser)
             val user = userService.getByIdUser(idUser)
-            val postResponseDto = PostResponseDto.fromModel(post, idUser, userService)
+            val postResponseDto = PostResponseDto.fromModel(post, userService)
             userService.addUp(idUser)
             return postResponseDto
         //}
@@ -91,7 +91,7 @@ class ServicePost (private val repo: PostRepository) {
         val post = repo.downById(idPost, idUser)?: throw NotFoundException()
         val userPost = userService.getByIdUser(post.idUser)
         val user = userService.getByIdUser(idUser)
-        val postResponseDto =  PostResponseDto.fromModel(post, idUser, userService)
+        val postResponseDto =  PostResponseDto.fromModel(post, userService)
         userService.addDown(idUser)
         return postResponseDto
     }
