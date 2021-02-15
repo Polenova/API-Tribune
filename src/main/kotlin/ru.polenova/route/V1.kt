@@ -27,12 +27,14 @@ class RoutingV1(
 
                 route("/") {
                     post("/registration") {
-                        val input = call.receive<UserRequestDto>()
-                        val response = userService.save(input)
+                        val input = call.receive<AuthenticationRequestDto>()
+                        val username = input.username
+                        val password = input.password
+                        val response = userService.save(username, password)
                         call.respond(response)
                     }
                     post("/authentication") {
-                        val input = call.receive<UserRequestDto>()
+                        val input = call.receive<AuthenticationRequestDto>()
                         val response = userService.authenticate(input)
                         call.respond(response)
                     }

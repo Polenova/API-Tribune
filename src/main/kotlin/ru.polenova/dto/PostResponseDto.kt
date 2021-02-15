@@ -24,8 +24,8 @@ data class PostResponseDto(
 ) {
     companion object {
         @KtorExperimentalAPI
-        suspend fun fromModel(postModel: PostModel, idUser: Long, userService: UserService): PostResponseDto {
-            val user = userService.getByIdUser(idUser)
+        suspend fun fromModel(postModel: PostModel, userService: UserService): PostResponseDto {
+            val user = userService.getByIdUser(postModel.idUser)
             val pressedPostUp = postModel.upUserIdMap.contains(user.idUser)
             val pressedPostDown = postModel.downUserIdMap.contains(user.idUser)
             val postUpCount = postModel.upUserIdMap.size
