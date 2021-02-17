@@ -65,16 +65,16 @@ class ServicePost (private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun upById(idPost: Long, idUser: Long, userService: UserService): PostResponseDto {
-        /*if (getByIdPost(idPost).upUserIdMap.contains(idUser)) {
+        if (getByIdPost(idPost).upUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
-        } else {*/
+        } else {
             val post = repo.upById(idPost, idUser)?: throw NotFoundException()
             val userPost = userService.getByIdUser(post.idUser)
             val user = userService.getByIdUser(idUser)
             val postResponseDto = PostResponseDto.fromModel(post, userService)
             userService.addUp(idUser)
             return postResponseDto
-        //}
+        }
 
     }
     /*@KtorExperimentalAPI
