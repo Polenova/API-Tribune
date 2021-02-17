@@ -48,26 +48,29 @@ class UserService (
         val token = tokenService.generate(copy)
         return TokenDto(token)
     }
-    suspend fun save(username: String, password: String): AuthenticationResponseDto {
-        if (username == "" || password == "") {
+    suspend fun save(input: UserRequestDto): TokenDto {
+        if (input.username == "" || input.password == "") {
             throw NullUsernameOrPasswordException("Username or password is empty")
-        } else if (repo.getByUsername(username) != null) {
+        } else if (repo.getByUsername(input.username) != null) {
             throw UserExistsException("User already exists")
         } else {
-            val model = repo.save(AuthUserModel(username = username, password = passwordEncoder.encode(password)))
+            val model = repo.save(AuthUserModel
+                (idUser = 0,
+                username = input.username,
+                password = passwordEncoder.encode(input.password)))
             val token = tokenService.generate(model)
-            return AuthenticationResponseDto(token)
+            return TokenDto(token)
         }
     }
     @KtorExperimentalAPI
-    suspend fun authenticate(input: AuthenticationRequestDto): AuthenticationResponseDto {
+    suspend fun authenticate(input: UserRequestDto): TokenDto {
         val model = repo.getByUsername(input.username) ?: throw NotFoundException()
         if (!passwordEncoder.matches(input.password, model.password)) {
             throw InvalidPasswordException("Wrong password!")
         }
 
         val token = tokenService.generate(model)
-        return AuthenticationResponseDto(token)
+        return TokenDto(token)
     }
 
     @KtorExperimentalAPI
