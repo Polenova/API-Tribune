@@ -41,13 +41,7 @@ class RoutingV1(
                     route("/me") {
                         get {
                             val me = call.authentication.principal<AuthUserModel>()
-                            call.respond(UserResponseDto.fromModel(me!!.idUser, userService, postService))
-                        }
-                        post("/change-password") {
-                            val me = call.authentication.principal<AuthUserModel>()
-                            val input = call.receive<PasswordChangeRequestDto>()
-                            val response = userService.changePassword(me!!.idUser, input)
-                            call.respond(response)
+                            call.respond(UserResponseDto.fromModel(me!!))
                         }
                     }
 

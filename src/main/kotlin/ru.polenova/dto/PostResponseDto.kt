@@ -26,7 +26,7 @@ data class PostResponseDto(
         @KtorExperimentalAPI
         suspend fun fromModel(postModel: PostModel, userService: UserService, idUser: Long):
                 PostResponseDto {
-            val user = userService.getByIdUser(postModel.idUser)
+            val user = userService.getByIdUser(idUser)
             val pressedPostUp = postModel.upUserIdMap.contains(user.idUser)
             val pressedPostDown = postModel.downUserIdMap.contains(user.idUser)
             val postUpCount = postModel.upUserIdMap.size

@@ -16,15 +16,14 @@ data class UserResponseDto(
 ) {
     @KtorExperimentalAPI
     companion object {
-        suspend fun fromModel(idUser: Long, userService: UserService, postService: ServicePost): UserResponseDto {
-            val user = userService.getByIdUser(idUser)
+        fun fromModel(model: AuthUserModel): UserResponseDto {
             return UserResponseDto(
-                idUser = user.idUser,
-                username = user.username,
-                attachmentImage = user.attachmentImage,
-                status = userService.checkStatus(user.idUser),
-                token = user.token,
-                readOnly = userService.checkReadOnly(idUser, postService)
+                idUser = model.idUser,
+                username = model.username,
+                attachmentImage = model.attachmentImage,
+                status = model.status,
+                token = model.token,
+                readOnly = model.readOnly
             )
         }
 
