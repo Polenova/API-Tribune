@@ -52,11 +52,20 @@ class ServicePost (private val repo: PostRepository) {
         return listPostsBefore.map { PostResponseDto.fromModel(it, userService, idUser) }
     }
 
-
+    @KtorExperimentalAPI
+    suspend fun removePostByIdPost(idPost: Long, me: AuthUserModel): Boolean {
+        val model = repo.getByIdPost(idPost) ?: throw NotFoundException()
+        return if (model.user == me) {
+            repo.removePostByIdPost(idPost)
+            true
+        } else {
+            false
+        }
+    }
 
     @KtorExperimentalAPI
     suspend fun upById(idPost: Long, idUser: Long, userService: UserService): PostResponseDto {
-        if (getByIdPost(idPost).upUserIdMap.contains(idUser)) {
+        if (getByIdPost(idPost).upUserIdMap.contains(idUser)||getByIdPost(idPost).downUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
         } else {
             val post = repo.upById(idPost, idUser)?: throw NotFoundException()
@@ -68,17 +77,12 @@ class ServicePost (private val repo: PostRepository) {
         }
 
     }
-    /*@KtorExperimentalAPI
-    suspend fun disUpById(idUser: Long, idPost: Long, userService: UserService): PostResponseDto {
-        val model = repo.disUpById(idPost, me.idUser) ?: throw NotFoundException()
-        return PostResponseDto.fromModel(model, idPost)
-    }
-*/
+
     @KtorExperimentalAPI
     suspend fun downById(idPost: Long, idUser: Long, userService: UserService): PostResponseDto {
-        /*if (getByIdPost(idPost).downUserIdMap.contains(idUser)) {
+        if (getByIdPost(idPost).downUserIdMap.contains(idUser)||getByIdPost(idPost).upUserIdMap.contains(idUser)) {
             throw UserAccessException("You are have reaction of this post")
-        }*/
+        }
         val post = repo.downById(idPost, idUser)?: throw NotFoundException()
         val userPost = userService.getByIdUser(post.idUser)
         val user = userService.getByIdUser(idUser)
