@@ -24,11 +24,11 @@ data class PostResponseDto(
 ) {
     companion object {
         @KtorExperimentalAPI
-        suspend fun fromModel(postModel: PostModel, userService: UserService, idUser: Long):
+        suspend fun fromModel(postModel: PostModel, userService: UserService):
                 PostResponseDto {
-            val user = userService.getByIdUser(postModel.idUser)
-            val pressedPostUp = postModel.upUserIdMap.contains(user.idUser)
-            val pressedPostDown = postModel.downUserIdMap.contains(user.idUser)
+            val userFromModel = userService.getByIdUser(postModel.user.idUser)
+            val pressedPostUp = postModel.upUserIdMap.contains(userFromModel.idUser)
+            val pressedPostDown = postModel.downUserIdMap.contains(userFromModel.idUser)
             val postUpCount = postModel.upUserIdMap.size
             val postDownCount = postModel.downUserIdMap.size
             val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
@@ -36,7 +36,7 @@ data class PostResponseDto(
 
             return PostResponseDto(
                 idPost = postModel.idPost,
-                userName = user.username,
+                userName = userFromModel.username,
                 dateOfCreate = dateOfPostString,
                 postName = postModel.postName,
                 postText = postModel.postText,
@@ -44,7 +44,7 @@ data class PostResponseDto(
                 pressedPostUp = pressedPostUp,
                 pressedPostDown = pressedPostDown,
                 postDownCount = postDownCount,
-                idUser = user.idUser,
+                idUser = userFromModel.idUser,
                 statusUser = StatusUser.PROMOTER,
                 link = postModel.link,
                 attachmentId = postModel.attachment?.id
