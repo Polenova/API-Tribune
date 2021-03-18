@@ -11,7 +11,8 @@ data class PostModel (
     val link: String? = null,
     val postName: String? = null,
     val postText: String? = null,
-    val user: AuthUserModel,
+    val idUser: Long,
+    val user: AuthUserModel? = null,
     val attachment: MediaModel? = null,
     var upUserIdMap: MutableMap<Long, LocalDateTime> = mutableMapOf(),
     var downUserIdMap: MutableMap<Long, LocalDateTime> = mutableMapOf()

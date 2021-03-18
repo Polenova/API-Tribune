@@ -47,6 +47,7 @@ class UserService (
         val token = tokenService.generate(copy)
         return TokenDto(token)
     }
+
     suspend fun save(input: UserRequestDto): TokenDto {
         if (input.username == "" || input.password == "") {
             throw NullUsernameOrPasswordException("Username or password is empty")

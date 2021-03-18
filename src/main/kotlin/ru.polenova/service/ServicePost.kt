@@ -52,16 +52,7 @@ class ServicePost (private val repo: PostRepository) {
         return listPostsBefore.map { PostResponseDto.fromModel(it, userService, idUser) }
     }
 
-    @KtorExperimentalAPI
-    suspend fun removePostByIdPost(idPost: Long, me: AuthUserModel): Boolean {
-        val model = repo.getByIdPost(idPost) ?: throw NotFoundException()
-        return if (model.user == me) {
-            repo.removePostByIdPost(idPost)
-            true
-        } else {
-            false
-        }
-    }
+
 
     @KtorExperimentalAPI
     suspend fun upById(idPost: Long, idUser: Long, userService: UserService): PostResponseDto {
