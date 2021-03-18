@@ -90,4 +90,10 @@ class UserService (
     @KtorExperimentalAPI
     suspend fun addDown(idUser: Long) = repo.addDown(idUser) ?: throw NotFoundException()
 
+    @KtorExperimentalAPI
+    suspend fun listUsersReaction(idPost: Long, postService: ServicePost): List<ReactionsDto>{
+        val post = postService.getByIdPost(idPost)
+        return repo.listUsersReaction(post).map { ReactionsDto.fromModel(it, this) }
+    }
+
 }

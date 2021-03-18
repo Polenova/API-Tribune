@@ -1,12 +1,10 @@
 package ru.polenova.repository
 
-import io.ktor.network.selector.SelectInterest.Companion.size
 import io.ktor.util.*
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ru.polenova.model.StatusUser
-import ru.polenova.model.AuthUserModel
+import ru.polenova.model.*
 import ru.polenova.service.ServicePost
 
 class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
@@ -113,4 +111,20 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
             items[index].userPostsId.add(idPost)
         }
     }
+
+    override suspend fun listUsersReaction(post: PostModel): List<ReactionModel> {
+        val listUsers = mutableListOf<ReactionModel>()
+        post.upUserIdMap.forEach {
+            val user = getByIdUser(it.key)
+            if (user != null) {
+                listUsers.add(ReactionModel(it.value, user, Reaction.UP))
+            }
+        }
+        post.downUserIdMap.forEach {
+            val user = getByIdUser(it.key)
+            if (user != null) {
+                listUsers.add(ReactionModel(it.value, user, Reaction.DOWN))
+            }
+        }
+        return listUsers.sortedWith(compareBy { it.date }).reversed()    }
 }

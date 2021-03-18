@@ -68,6 +68,14 @@ class RoutingV1(
                             val response = postService.getPostsBefore(idPost, me!!.idUser, userService)
                             call.respond(response)
                         }
+                        get ("/{idPost}/ReactionByUsers") {
+                            val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
+                                "idPost",
+                                "Long"
+                            )
+                            val response = userService.listUsersReaction(idPost, postService)
+                            call.respond(response)
+                        }
                         post {
                             val me = call.authentication.principal<AuthUserModel>()
                             val input = call.receive<PostRequestDto>()
