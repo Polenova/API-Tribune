@@ -84,14 +84,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         }
     }
 
-    override suspend fun getPostsAfter(idPost: Long): List<PostModel>? {
-        val item = getByIdPost(idPost)
-        val itemsReversed = getAllPosts()
-        return when (val index = itemsReversed.indexOfFirst { it.idPost == item?.idPost }) {
-            -1 -> null
-            0 -> emptyList()
-            else -> itemsReversed.slice(0 until index)
-        }    }
+
 
     override suspend fun getPostsBefore(idPost: Long): List<PostModel>? {
         val item = getByIdPost(idPost)

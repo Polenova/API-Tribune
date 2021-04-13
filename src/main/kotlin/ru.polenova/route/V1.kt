@@ -68,7 +68,7 @@ class RoutingV1(
                             val response = postService.getPostsBefore(idPost, me!!.idUser, userService)
                             call.respond(response)
                         }
-                        get ("/{idPost}/ReactionByUsers") {
+                        get ("/{idPost}/reaction-by-users") {
                             val idPost = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
                                 "idPost",
                                 "Long"
