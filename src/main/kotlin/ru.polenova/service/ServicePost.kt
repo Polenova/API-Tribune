@@ -91,9 +91,8 @@ class ServicePost (private val repo: PostRepository) {
         return postResponseDto
     }
 
-    /*@KtorExperimentalAPI
-    suspend fun disDownById(idPost: Long, me: AuthUserModel): PostResponseDto {
-        val model = repo.disDownById(idPost, me.idUser) ?: throw NotFoundException()
-        return PostResponseDto.fromModel(model, idPost)
-    }*/
+    @KtorExperimentalAPI
+    suspend fun getUserPosts(idUser: Long, userService: UserService) =
+        repo.getUserPosts(idUser).map { PostResponseDto.fromModel(it, userService, idUser) }
+
 }

@@ -19,5 +19,4 @@ interface UserRepository {
     suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean
     suspend fun addPostId(user: AuthUserModel, idPost: Long)
     suspend fun listUsersReaction(post: PostModel): List<ReactionModel>
-
 }

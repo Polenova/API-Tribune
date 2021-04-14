@@ -13,4 +13,6 @@ interface PostRepository {
     suspend fun disDownById(idPost: Long, idUser: Long): PostModel?
     suspend fun getRecent(): List<PostModel>
     suspend fun getPostsBefore(idPost: Long): List<PostModel>?
+    suspend fun getUserPosts(idUser: Long): List<PostModel>
+
 }

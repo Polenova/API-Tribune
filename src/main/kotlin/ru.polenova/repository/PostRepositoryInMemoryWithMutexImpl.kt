@@ -101,4 +101,9 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
             }
         }
     }
+    override suspend fun getUserPosts(idUser: Long): List<PostModel> =
+        items
+            .filter {it.idUser == idUser}
+            .sortedWith(compareBy { it.dateOfCreate }).reversed()
+
 }

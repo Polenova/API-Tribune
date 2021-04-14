@@ -102,6 +102,19 @@ class RoutingV1(
                             call.respond(response)
                         }
 
+                        get("/me") {
+                            val me = call.authentication.principal<AuthUserModel>()
+                            val response = postService.getUserPosts(me!!.idUser, userService)
+                            call.respond(response)
+                        }
+
+                        get("/username/{username}") {
+                            val username = call.parameters["username"]
+                            val user = userService.getByUserName(username!!)
+                            val response = postService.getUserPosts(user!!.idUser, userService)
+                            call.respond(response)
+                        }
+
                         delete("/{idPost}") {
                             val me = call.authentication.principal<AuthUserModel>()
                             val id = call.parameters["idPost"]?.toLongOrNull() ?: throw ParameterConversionException(
