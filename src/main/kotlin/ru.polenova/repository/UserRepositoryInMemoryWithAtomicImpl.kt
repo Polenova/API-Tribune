@@ -28,7 +28,33 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
     override suspend fun getByUsername(username: String): AuthUserModel? = items.find { it.username == username }
 
     override suspend fun getByUserStatus(user: AuthUserModel): StatusUser {
-        TODO("Not yet implemented")
+        val index = items.indexOfFirst { it.idUser == user.idUser }
+        val itemsCompareDislikes = items.sortedWith(compareBy { it.down }).reversed()
+        val itemsCompareLikes = items.sortedWith(compareBy { it.up }).reversed()
+        val indexUserByDislikes = itemsCompareDislikes.indexOfFirst { it.idUser == user.idUser }
+        val indexUserByLikes = itemsCompareLikes.indexOfFirst { it.idUser == user.idUser }
+        if (user.down > 3 || (user.down > user.up * 2 && user.up != 0L)
+            || (user.down > 2 && user.up == 0L) || ((indexUserByDislikes <= 4) && items.size >= 20)) {
+            if (user.status != StatusUser.HATER) {
+                mutex.withLock {
+                    items[index].status = StatusUser.HATER
+                }
+            }
+        } else if (user.up > 5 || (user.up > user.down * 2 && user.down != 0L)
+            || (user.up > 2 && user.down == 0L) || ((indexUserByLikes <= 4) && items.size >= 20)) {
+            if (user.status != StatusUser.PROMOTER) {
+                mutex.withLock {
+                    items[index].status = StatusUser.PROMOTER
+                }
+            }
+        } else {
+            if (user.status != StatusUser.NONE) {
+                mutex.withLock {
+                    items[index].status = StatusUser.NONE
+                }
+            }
+        }
+        return items[index].status
     }
 
 

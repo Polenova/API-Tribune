@@ -33,6 +33,7 @@ data class PostResponseDto(
             val postDownCount = postModel.downUserIdMap.size
             val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy")
             val dateOfPostString = postModel.dateOfCreate.format(formatter)
+            val status = userService.checkStatus(postModel.idUser)
 
             return PostResponseDto(
                 idPost = postModel.idPost,
@@ -45,7 +46,7 @@ data class PostResponseDto(
                 pressedPostDown = pressedPostDown,
                 postDownCount = postDownCount,
                 idUser = userFromModel.idUser,
-                statusUser = StatusUser.PROMOTER,
+                statusUser = status,
                 link = postModel.link,
                 attachmentId = postModel.attachment?.id
             )
