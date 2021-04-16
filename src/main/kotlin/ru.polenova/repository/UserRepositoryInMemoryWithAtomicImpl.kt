@@ -29,19 +29,19 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
 
     override suspend fun getByUserStatus(user: AuthUserModel): StatusUser {
         val index = items.indexOfFirst { it.idUser == user.idUser }
-        val itemsCompareDislikes = items.sortedWith(compareBy { it.down }).reversed()
-        val itemsCompareLikes = items.sortedWith(compareBy { it.up }).reversed()
-        val indexUserByDislikes = itemsCompareDislikes.indexOfFirst { it.idUser == user.idUser }
-        val indexUserByLikes = itemsCompareLikes.indexOfFirst { it.idUser == user.idUser }
+        val itemsCompareDown = items.sortedWith(compareBy { it.down }).reversed()
+        val itemsCompareUp = items.sortedWith(compareBy { it.up }).reversed()
+        val indexUserByDown = itemsCompareDown.indexOfFirst { it.idUser == user.idUser }
+        val indexUserByUp = itemsCompareUp.indexOfFirst { it.idUser == user.idUser }
         if (user.down > 3 || (user.down > user.up * 2 && user.up != 0L)
-            || (user.down > 2 && user.up == 0L) || ((indexUserByDislikes <= 4) && items.size >= 20)) {
+            || (user.down > 2 && user.up == 0L) || ((indexUserByDown <= 4) && items.size >= 20)) {
             if (user.status != StatusUser.HATER) {
                 mutex.withLock {
                     items[index].status = StatusUser.HATER
                 }
             }
         } else if (user.up > 5 || (user.up > user.down * 2 && user.down != 0L)
-            || (user.up > 2 && user.down == 0L) || ((indexUserByLikes <= 4) && items.size >= 20)) {
+            || (user.up > 2 && user.down == 0L) || ((indexUserByUp <= 4) && items.size >= 20)) {
             if (user.status != StatusUser.PROMOTER) {
                 mutex.withLock {
                     items[index].status = StatusUser.PROMOTER

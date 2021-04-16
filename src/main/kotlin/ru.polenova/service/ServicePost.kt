@@ -24,23 +24,26 @@ class ServicePost (private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun save(input: PostRequestDto, idUser: Long, userService: UserService) {
-        if (userService.checkReadOnly(idUser, this)) throw UserAccessException("Read Only mode")
-        val date = LocalDateTime.now()
-        val model = PostModel(
-            idPost = 0L,
-            dateOfCreate = date,
-            postName = input.postName,
-            postText = input.postText,
-            link = input.link,
-            idUser = idUser
-            /*postUpCount = 0,
+        if (userService.checkReadOnly(idUser, this)) {
+            throw UserAccessException("Read Only mode")
+        } else {
+            val date = LocalDateTime.now()
+            val model = PostModel(
+                idPost = 0L,
+                dateOfCreate = date,
+                postName = input.postName,
+                postText = input.postText,
+                link = input.link,
+                idUser = idUser
+                /*postUpCount = 0,
             postDownCount = 0,
             pressedPostDown = false,
             pressedPostUp = false,*/
-            //attachment = input.attachmentId?.let { MediaModel(id = it) }
+                //attachment = input.attachmentId?.let { MediaModel(id = it) }
 
-        )
-        userService.addPostId(idUser, repo.savePost(model).idPost)
+            )
+            userService.addPostId(idUser, repo.savePost(model).idPost)
+        }
     }
 
     @KtorExperimentalAPI
