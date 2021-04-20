@@ -152,5 +152,6 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
                 listUsers.add(ReactionModel(it.value, user, Reaction.DOWN))
             }
         }
-        return listUsers.sortedWith(compareBy { it.date }).reversed()    }
+        return listUsers.sortedWith(compareBy { it.date }).reversed()
+    }
 }

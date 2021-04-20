@@ -14,20 +14,20 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
     private val items = mutableListOf<PostModel>()
     private val mutex = Mutex()
 
-    override suspend fun getAllPosts()  = items.sortedWith(compareBy { it.dateOfCreate }).reversed()
+    override suspend fun getAllPosts() = items.sortedWith(compareBy { it.dateOfCreate }).reversed()
 
     override suspend fun getByIdPost(idPost: Long): PostModel? =
         items.find { it.idPost == idPost }
 
     override suspend fun savePost(item: PostModel): PostModel {
-                val todayDate = LocalDateTime.now()
-                val dateId = ZoneId.of("Europe/Moscow")
-                val zonedDateTime = ZonedDateTime.of(todayDate, dateId)
-                val copy = item.copy(idPost = nextId.incrementAndGet(), dateOfCreate = todayDate)
-                mutex.withLock {
-                    items.add(copy)
-                }
-                return copy
+        val todayDate = LocalDateTime.now()
+        val dateId = ZoneId.of("Europe/Moscow")
+        val zonedDateTime = ZonedDateTime.of(todayDate, dateId)
+        val copy = item.copy(idPost = nextId.incrementAndGet(), dateOfCreate = todayDate)
+        mutex.withLock {
+            items.add(copy)
+        }
+        return copy
 
     }
 
@@ -36,6 +36,7 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
             items.removeIf { it.idPost == idPost }
         }
     }
+
 
     override suspend fun upById(idPost: Long, idUser: Long): PostModel? {
         val index = items.indexOfFirst { it.idPost == idPost }

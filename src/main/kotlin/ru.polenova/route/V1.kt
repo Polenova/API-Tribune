@@ -9,7 +9,9 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
-import ru.polenova.dto.*
+import ru.polenova.dto.PostRequestDto
+import ru.polenova.dto.UserRequestDto
+import ru.polenova.dto.UserResponseDto
 import ru.polenova.model.AuthUserModel
 import ru.polenova.service.ServicePost
 import ru.polenova.service.UserService
@@ -41,7 +43,7 @@ class RoutingV1(
                     route("/me") {
                         get {
                             val me = call.authentication.principal<AuthUserModel>()
-                            call.respond(UserResponseDto.fromModel(me!!))
+                            call.respond(UserResponseDto.fromModel(me!!.idUser, userService, postService))
                         }
                     }
 

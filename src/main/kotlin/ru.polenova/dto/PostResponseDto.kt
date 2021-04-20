@@ -3,7 +3,6 @@ package ru.polenova.dto
 import io.ktor.util.*
 import ru.polenova.model.PostModel
 import ru.polenova.model.StatusUser
-import ru.polenova.model.*
 import ru.polenova.service.UserService
 import java.time.format.DateTimeFormatter
 

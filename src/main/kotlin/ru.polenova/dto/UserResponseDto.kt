@@ -1,7 +1,6 @@
 package ru.polenova.dto
 
 import io.ktor.util.*
-import ru.polenova.model.AuthUserModel
 import ru.polenova.model.StatusUser
 import ru.polenova.service.ServicePost
 import ru.polenova.service.UserService
