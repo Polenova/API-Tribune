@@ -6,7 +6,6 @@ import ru.polenova.dto.PostRequestDto
 import ru.polenova.dto.PostResponseDto
 import ru.polenova.exception.UserAccessException
 import ru.polenova.model.AuthUserModel
-import ru.polenova.model.MediaModel
 import ru.polenova.model.PostModel
 import ru.polenova.repository.PostRepository
 import java.time.LocalDateTime
@@ -24,7 +23,7 @@ class ServicePost (private val repo: PostRepository) {
 
     @KtorExperimentalAPI
     suspend fun save(input: PostRequestDto, idUser: Long, userService: UserService) {
-        if (userService.checkReadOnly(idUser, this)) {
+        if (!userService.checkReadOnly(idUser, this)) {
             throw UserAccessException("Read Only mode")
         } else {
             val date = LocalDateTime.now()
