@@ -114,17 +114,12 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         items[index].userPostsId.forEach {
             val post = postService.getByIdPost(it)
             if (post.downUserIdMap.size >= 5) {         // > 100
-                if (!items[index].readOnly) {
                     mutex.withLock {
                         items[index].readOnly = true
-                    }
                 }
-                return true
             } else {
-                if (items[index].readOnly) {
                     mutex.withLock {
                         items[index].readOnly = false
-                    }
                 }
             }
         }

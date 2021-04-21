@@ -47,29 +47,11 @@ class PostRepositoryInMemoryWithMutexImpl : PostRepository {
         return items[index]
     }
 
-    override suspend fun disUpById(idPost: Long, idUser: Long): PostModel? {
-        val index = items.indexOfFirst { it.idPost == idPost }
-        if (index < 0) return null
-        mutex.withLock {
-            items[index].upUserIdMap.remove(idUser)
-        }
-        return items[index]
-    }
-
     override suspend fun downById(idPost: Long, idUser: Long): PostModel? {
         val index = items.indexOfFirst { it.idPost == idPost }
         if (index < 0) return null
         mutex.withLock {
             items[index].downUserIdMap.put(idUser, LocalDateTime.now())
-        }
-        return items[index]
-    }
-
-    override suspend fun disDownById(idPost: Long, idUser: Long): PostModel? {
-        val index = items.indexOfFirst { it.idPost == idPost }
-        if (index < 0) return null
-        mutex.withLock {
-            items[index].downUserIdMap.remove(idUser)
         }
         return items[index]
     }

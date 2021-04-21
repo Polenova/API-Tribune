@@ -8,9 +8,7 @@ interface PostRepository {
     suspend fun savePost(item: PostModel): PostModel
     suspend fun removePostByIdPost(idPost: Long)
     suspend fun upById(idPost: Long, idUser: Long): PostModel?
-    suspend fun disUpById(idPost: Long, idUser: Long): PostModel?
     suspend fun downById(idPost: Long, idUser: Long): PostModel?
-    suspend fun disDownById(idPost: Long, idUser: Long): PostModel?
     suspend fun getRecent(): List<PostModel>
     suspend fun getPostsBefore(idPost: Long): List<PostModel>?
     suspend fun getUserPosts(idUser: Long): List<PostModel>
