@@ -9,7 +9,7 @@ data class UserResponseDto(
     val idUser: Long,
     val username: String,
     val attachmentImage: String?,
-    val status: StatusUser,
+    var statusUser: StatusUser = StatusUser.PROMOTER,
     val token: String?,
     val readOnly: Boolean
 ) {
@@ -21,7 +21,7 @@ data class UserResponseDto(
                 idUser = user.idUser,
                 username = user.username,
                 attachmentImage = user.attachmentImage,
-                status = userService.checkStatus(user.idUser),
+                statusUser = userService.checkStatus(user.idUser),
                 token = user.token,
                 readOnly = userService.checkReadOnly(user.idUser, postService)
             )

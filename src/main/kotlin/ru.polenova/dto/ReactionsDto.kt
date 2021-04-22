@@ -26,7 +26,7 @@ data class ReactionsDto (
                 dateOfReaction = date,
                 idUser = model.user.idUser,
                 userName = model.user.username,
-                status = StatusUser.PROMOTER,
+                status = userService.checkStatus(model.user.idUser),
                 reaction = model.reaction,
                 attachmentImage = model.user.attachmentImage
             )
