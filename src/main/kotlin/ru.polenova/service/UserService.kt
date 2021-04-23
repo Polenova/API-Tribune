@@ -83,8 +83,8 @@ class UserService (
     }
 
     @KtorExperimentalAPI
-    suspend fun checkReadOnly(idUser: Long, user: AuthUserModel): Boolean {
-        return repo.checkReadOnly(idUser, user)
+    suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean {
+        return repo.checkReadOnly(idUser, postService)
     }
 
     @KtorExperimentalAPI
