@@ -1,10 +1,9 @@
 package ru.polenova.repository
 
-import ru.polenova.model.StatusUser
 import ru.polenova.model.AuthUserModel
 import ru.polenova.model.PostModel
 import ru.polenova.model.ReactionModel
-import ru.polenova.service.ServicePost
+import ru.polenova.model.StatusUser
 
 interface UserRepository {
     suspend fun getAllPostsUser(): List<AuthUserModel>
@@ -16,7 +15,7 @@ interface UserRepository {
     suspend fun addUp(idUser: Long): AuthUserModel?
     suspend fun addDown(idUser: Long): AuthUserModel?
     suspend fun save(item: AuthUserModel): AuthUserModel
-    suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean
+    suspend fun checkReadOnly(idUser: Long, user: AuthUserModel): Boolean
     suspend fun addPostId(user: AuthUserModel, idPost: Long)
     suspend fun listUsersReaction(post: PostModel): List<ReactionModel>
 }

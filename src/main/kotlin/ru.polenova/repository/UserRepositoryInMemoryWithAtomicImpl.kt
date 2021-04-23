@@ -5,7 +5,6 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ru.polenova.model.*
-import ru.polenova.service.ServicePost
 
 class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
     private var nextId = atomic(0L)
@@ -34,14 +33,14 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         val indexUserByDown = itemsCompareDown.indexOfFirst { it.idUser == user.idUser }
         val indexUserByUp = itemsCompareUp.indexOfFirst { it.idUser == user.idUser }
         if (user.down > 3 || (user.down > user.up * 2 && user.up != 0L)
-            || (user.down > 2 && user.up == 0L) || ((indexUserByDown <= 4) && items.size >= 20)) {
+            || (user.down > 2 && user.up == 0L) || ((indexUserByDown <= 4) && items.size >= 7)) {
             if (user.status != StatusUser.HATER) {
                 mutex.withLock {
                     items[index].status = StatusUser.HATER
                 }
             }
-        } else if (user.up > 5 || (user.up > user.down * 2 && user.down != 0L)
-            || (user.up > 2 && user.down == 0L) || ((indexUserByUp <= 4) && items.size >= 20)) {
+        } else if (user.up > 3 || (user.up > user.down * 2 && user.down != 0L)
+            || (user.up > 2 && user.down == 0L) || ((indexUserByUp <= 4) && items.size >= 7)) {
             if (user.status != StatusUser.PROMOTER) {
                 mutex.withLock {
                     items[index].status = StatusUser.PROMOTER
@@ -109,11 +108,11 @@ class UserRepositoryInMemoryWithAtomicImpl : UserRepository {
         }
     }
     @KtorExperimentalAPI
-    override suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean {
+    override suspend fun checkReadOnly(idUser: Long, user: AuthUserModel): Boolean {
         val index = items.indexOfFirst { it.idUser == idUser }
         items[index].userPostsId.forEach {
-            val post = postService.getByIdPost(it)
-            if (post.downUserIdMap.size >= 5 && post.upUserIdMap.isEmpty()) {         // > 100
+            //val post = postService.getByIdPost(it)
+            if (user.down >= 5 && user.up == 0L) {         // > 100
                 if (!items[index].readOnly) {
                     mutex.withLock {
                         items[index].readOnly = true

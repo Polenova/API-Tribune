@@ -3,7 +3,10 @@ package ru.polenova.service
 import io.ktor.features.*
 import io.ktor.util.*
 import org.springframework.security.crypto.password.PasswordEncoder
-import ru.polenova.dto.*
+import ru.polenova.dto.PasswordChangeRequestDto
+import ru.polenova.dto.ReactionsDto
+import ru.polenova.dto.TokenDto
+import ru.polenova.dto.UserRequestDto
 import ru.polenova.exception.InvalidPasswordException
 import ru.polenova.exception.NullUsernameOrPasswordException
 import ru.polenova.exception.PasswordChangeException
@@ -80,8 +83,8 @@ class UserService (
     }
 
     @KtorExperimentalAPI
-    suspend fun checkReadOnly(idUser: Long, postService: ServicePost): Boolean {
-        return repo.checkReadOnly(idUser, postService)
+    suspend fun checkReadOnly(idUser: Long, user: AuthUserModel): Boolean {
+        return repo.checkReadOnly(idUser, user)
     }
 
     @KtorExperimentalAPI

@@ -23,7 +23,7 @@ data class UserResponseDto(
                 attachmentImage = user.attachmentImage,
                 statusUser = userService.checkStatus(user.idUser),
                 token = user.token,
-                readOnly = userService.checkReadOnly(user.idUser, postService)
+                readOnly = userService.checkReadOnly(user.idUser, user)
             )
         }
     }
